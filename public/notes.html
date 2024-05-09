@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Notes App</title>
+    <style>
+        textarea#text_table {
+            overflow: hidden;
+            resize: none;
+        }
+        /* Add this style */
+        button, form{
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <button id="get-all-notes">Hae kaikki muistiot</button>
+        
+    <form id="create-note">
+        <label for="note-content">Luo uusi muistio:</label>
+        <textarea id="note-content" name="content" required></textarea>
+        <button type="submit">Luo</button>
+    </form>
+
+    <form id="update-note">
+        <label for="update-id">Päivitä muistio ID:n perusteella:</label>
+        <input type="text" id="update-id" name="id" required size="3">
+        <textarea id="update-content" name="content" required size ></textarea>
+        <button type="submit">Päivitä</button>
+    </form>
+
+    <form id="get-note-by-id">
+        <label for="note-id">Hae muistio ID:n perusteella:</label>
+        <button type="submit">ID:</button>
+        <input type="text" id="note-id" name="id" required size="3">
+    </form>
+
+    <form id="update-note">
+        <label for="update-id">Päivitä muistio ID:n perusteella:</label>
+        <input type="text" id="update-id" name="id" required size="3">
+        <textarea id="update-content" name="content" required size ></textarea>
+        <button type="submit">Päivitä</button>
+    </form>
+
+
+    <form id="delete-note">
+        <label for="delete-id">Poista muistio ID:n perusteella:</label>
+        <input type="text" id="delete-id" name="id" required size ="3">
+        <button type="submit">Poista</button>
+    </form>
+
+   
+
+    <textarea id="text_table"></textarea>
+
+    <script src="notes.js"></script>
+</body>
+</html>
