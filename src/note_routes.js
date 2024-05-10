@@ -1,9 +1,11 @@
+// Luodaan muistilapun reitit
 import { Router } from "express";
 import { authenticate } from "./middlewares/auth.js";
 import { db } from '../database/sqlite.js'
 
 export const noteRouter = Router()
 
+// Haetaan kaikki muistilaput autentikoinnin jälkeen
 noteRouter.get("/notes", authenticate, (req, res) => {
 
     db.all("SELECT * FROM note", [], (err, rows) => {
@@ -17,6 +19,7 @@ noteRouter.get("/notes", authenticate, (req, res) => {
     })
 })
 
+// Luodaan muistilappu autentikoinnin jälkeen
 noteRouter.post("/notes", authenticate, (req, res) => {
 
     const { content } = req.body
@@ -35,6 +38,8 @@ noteRouter.post("/notes", authenticate, (req, res) => {
     })
 
 })
+
+// Haetaan muistilappu ID:n perusteella
 noteRouter.get("/notes/:id", authenticate, (req, res) => {
     const { id } = req.params;
 
@@ -50,6 +55,8 @@ noteRouter.get("/notes/:id", authenticate, (req, res) => {
         }
     });
 });
+
+// Päivitetään muistilappu ID:n perusteella autentikoinnin jälkeen
 noteRouter.put("/notes/:id", authenticate, (req, res) => {
     const { content } = req.body;
     const { id } = req.params;
@@ -67,6 +74,7 @@ noteRouter.put("/notes/:id", authenticate, (req, res) => {
     });
 });
 
+// Poistetaan muistilappu ID:n perusteella autentikoinnin jälkeen
 noteRouter.delete("/notes/:id", authenticate, (req, res) => {
     const { id } = req.params;
 

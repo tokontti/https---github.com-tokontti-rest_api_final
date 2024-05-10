@@ -1,3 +1,5 @@
+/* Tässä tiedostossa määritellään Express-reitit käyttäjän tietojen käsittelyyn. Tämä tiedosto on
+vastuussa käyttäjän tietojen käsittelystä ja reittien määrittämisestä.*/
 import { Router } from "express";
 import {db} from "../database/sqlite.js"
 import { JWT_SECRET } from "./config.js";

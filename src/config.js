@@ -1,3 +1,4 @@
+// Tämä tiedosto ottaa vastaan JWT_SECRET ympäristömuuttujan 
 export const JWT_SECRET = process.env['JWT_SECRET']
 
 if (!JWT_SECRET) {

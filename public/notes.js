@@ -1,19 +1,22 @@
+/* Tämä on selainsovelluksen pääohjelma, joka käyttää fetch API:a hakeakseen ja lähettääkseen
+ tietoja palvelimelle. Tämä tiedosto on vastuussa käyttöliittymän toiminnasta ja käyttäjän
+syötteiden käsittelystä.*/ 
 async function getNotes() {
     const response = await fetch("/api/v1/notes");
     const data = await response.json();
 
-    // Get the textarea element
+    // Muodosta tekstilaatikko elementti
     const textarea = document.getElementById("text_table");
 
-    // Clear the textarea
+    // Tyhjennä tekstilaatikko
     textarea.value = '';
 
-    // For each note, append its content to the textarea
+    // lisää muistiinpanon ID ja sisältö tekstilaatikkoon
     data.forEach(note => {
         textarea.value += `ID: ${note.id}, Content: ${note.content}\n`;
     });
 
-    // Call autoResize function
+    // kutsu autoResize funktiota
     autoResize.call(textarea);
 }
 async function createNote(content) {
@@ -31,29 +34,29 @@ async function createNote(content) {
 
     return response.json();
 }
-
+// Hae note Id:n perusteella
 async function getNoteById(id) {
-    // Ensure the id is a string
+    // Varmista että id on numero
     fetch(`/api/v1/notes/${String(id)}`)
     .then(response => response.json())
     .then(note => {
-        // Get the textarea element
+        // Hae tekstilaatikko elementti
         const textarea = document.getElementById("text_table");
 
-        // Clear the textarea
+        // Tyhjennä tekstilaatikko
         textarea.value = '';
 
-        // Append the note's content to the textarea
+        // Lisää muistiinpanon ID ja sisältö tekstilaatikkoon
         textarea.value = `ID: ${note.id}, Content: ${note.content}`;
 
-        // Call autoResize function
+        // Kutsu autoResize funktiota
         autoResize.call(textarea);
     })
     .catch(error => {
         console.error('Error:', error);
     });
 }
-// Delete a note by ID
+// Poista muistiinpano ID:n perusteella
 async function deleteNoteById(id) {
     const response = await fetch(`/api/v1/notes/${id}`, {
         method: 'DELETE',
@@ -66,8 +69,7 @@ async function deleteNoteById(id) {
     return response.json();
 }
 
-// Auto-resizing textarea
-// Update a note by ID
+// Päivitä muistiinpano ID:n perusteella
 
 async function updateNoteById(id, newContent) {
     const response = await fetch(`/api/v1/notes/${id}`, {
@@ -85,20 +87,24 @@ async function updateNoteById(id, newContent) {
     return response.json();
 }
 
+// Lisää tapahtumankuuntelijat
 document.getElementById("get-all-notes").addEventListener("click", getNotes);
 
+// Lisää kuuntelija hae muistiinpano ID:n perusteella
 document.getElementById("get-note-by-id").addEventListener("submit", (event) => {
     event.preventDefault();
     const id = document.getElementById("note-id").value;
     getNoteById(id);
 });
 
+// Lisää kuuntelija luo muistiinpano
 document.getElementById("create-note").addEventListener("submit", (event) => {
     event.preventDefault();
     const content = document.getElementById("note-content").value;
     createNote(content);
 });
 
+// Lisää kuuntelija päivitä muistiinpano
 document.getElementById("update-note").addEventListener("submit", (event) => {
     event.preventDefault();
     const id = document.getElementById("update-id").value;
@@ -106,12 +112,13 @@ document.getElementById("update-note").addEventListener("submit", (event) => {
     updateNoteById(id, newContent);
 });
 
+// Lisää kuuntelija poista muistiinpano
 document.getElementById("delete-note").addEventListener("submit", (event) => {
     event.preventDefault();
     const id = document.getElementById("delete-id").value;
     deleteNoteById(id);
 });
-// Auto-resizing textarea
+// Lisää kuuntelija tekstilaatikolle
 const textarea = document.getElementById('text_table');
 
 textarea.addEventListener('input', autoResize, false);
