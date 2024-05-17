@@ -1,5 +1,7 @@
 /* Tässä tiedostossa määritellään Express-reitit käyttäjän tietojen käsittelyyn. Tämä tiedosto on
 vastuussa käyttäjän tietojen käsittelystä ja reittien määrittämisestä.*/
+
+// Tuodaan tarvittavat moduulit ja funktiot
 import { Router } from "express";
 import {db} from "../database/sqlite.js"
 import { JWT_SECRET } from "./config.js";
@@ -10,15 +12,17 @@ import { adminOnly, authenticate } from "./middlewares/auth.js";
 
 export const router = Router();
 
+// Määritellään käyttäjän salasanan suolaus kierrosten määrä
 const saltRounds = 10
 
-
+// GET-reitti käyttäjän tietojen hakuun 
 router.get('/user/account', authenticate, (req, res)=>{
 
     res.json(req.userData)
 
 })
 
+// GET-reitti kaikkien käyttäjien tietojen hakuun
 router.get('/user', authenticate, adminOnly, (req, res) => {
 
     db.all('SELECT id, username, age, role FROM user', [], (err, rows) => {
@@ -32,6 +36,7 @@ router.get('/user', authenticate, adminOnly, (req, res) => {
 
 })
 
+// GET-reitti yksittäisen käyttäjän tietojen hakuun id:n perusteella
 router.get('/user/:id', (req, res) => {
     const id = req.params.id
 
@@ -43,10 +48,10 @@ router.get('/user/:id', (req, res) => {
 
         res.send(JSON.stringify(row))
     })
-
-    // res.send("Käyttäjän tiedot id:llä: " + id)
+   
 })
 
+// POST-reitti uuden käyttäjän luomiseen
 router.post('/user', async (req, res) => {
     const { username, password, age, role } = req.body
 
@@ -84,7 +89,7 @@ router.post('/user', async (req, res) => {
 })
 
 
-
+// PUT-reitti käyttäjän tietojen päivittämiseen
 router.put('/user', (req, res) => {
 
 
@@ -106,10 +111,12 @@ router.put('/user', (req, res) => {
     })
 })
 
+// PATCH-reitti käyttäjän iän päivittämiseen
 router.patch('/user', (req, res) => {
     res.send('Käyttäjän ikä päivitetty onnistuneesti')
 })
 
+// DELETE-reitti käyttäjän poistamiseen
 router.delete('/user/:id', (req, res) => {
     const id = req.params.id
 
@@ -126,7 +133,7 @@ router.delete('/user/:id', (req, res) => {
 })
 
 
-
+// POST-reitti käyttäjän kirjautumiseen
 router.post('/user/login', (req, res) => {
 
     const { username, password } = req.body
@@ -134,15 +141,17 @@ router.post('/user/login', (req, res) => {
     if (!username || !password) {
         return res.status(400).send()
     }
-
+    
+    // Haetaan käyttäjä tietokannasta käyttäjänimen perusteella
     db.get('SELECT id, password, role FROM user WHERE username = ?', [username], async (err, row) => {
 
         if (err || !row) {
             return res.status(400).send()
         }
 
+         // Tarkistetaan, että annettu salasana vastaa tietokannassa olevaa salasanaa
         const isAuthenticated = await compare(password, row.password)
-
+         // Jos salasana on oikein, luodaan JWT-token ja palautetaan se käyttäjälle
         if (isAuthenticated) {
 
             const jti = crypto.randomUUID()
@@ -169,16 +178,10 @@ router.post('/user/login', (req, res) => {
                     sameSite: "lax",
                     secure: true
                 })
-
-                // res.setHeader('Set-Cookie', 'accessToken=Bearer ' + token + "; HttpOnly;")
-
                 return res.send("Kirjautuminen onnistui")
-
             })
-
-
-
         } else {
+            // Jos salasana on väärin, palautetaan virheviesti
             return res.status(400).send()
         }
     })
